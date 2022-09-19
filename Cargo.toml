@@ -11,8 +11,12 @@ futures = "0.3.24"
 h2 = "0.3.14"
 http = "0.2.8"
 humantime = "2.1.0"
+pin-project-lite = "0.2.9"
+rustls = "0.20.6"
 tokio = { version = "1.21.0", default-features = false, features = ["macros", "net", "rt-multi-thread", "time"]}
+tokio-rustls = "0.23.4"
 tokio-util = "0.7.4"
 tracing = "0.1"
 tracing-log = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+webpki-roots = "0.22.4"

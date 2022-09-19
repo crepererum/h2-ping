@@ -5,11 +5,14 @@ use clap::Parser;
 use futures::FutureExt;
 use h2::{client, Ping};
 use logging::{setup_logging, LoggingCLIConfig};
-use tokio::net::TcpStream;
 use tokio_util::sync::CancellationToken;
 use tracing::{debug, info};
+use transport::TransportCLIConfig;
+
+use crate::transport::setup_transport;
 
 mod logging;
+mod transport;
 
 /// CLI args.
 #[derive(Debug, Parser)]
@@ -17,6 +20,10 @@ struct Args {
     /// Logging config.
     #[clap(flatten)]
     logging_cfg: LoggingCLIConfig,
+
+    /// Transport config.
+    #[clap(flatten)]
+    transport_cfg: TransportCLIConfig,
 
     /// Count.
     #[clap(short, long)]
@@ -26,14 +33,10 @@ struct Args {
     #[clap(
         short,
         long,
-        default_value="100ms", 
+        default_value="100ms",
         value_parser=humantime::parse_duration,
     )]
     interval: Duration,
-
-    /// Host and port.
-    #[clap()]
-    addr: String,
 }
 
 /// Main entry point.
@@ -42,10 +45,10 @@ async fn main() -> Result<()> {
     let args = Args::parse();
     setup_logging(args.logging_cfg)?;
 
-    let tcp = TcpStream::connect(&args.addr).await.context("connect")?;
-    debug!(addr = args.addr.as_str(), "connected",);
+    let transport = setup_transport(args.transport_cfg).await?;
 
-    let (_send_request, mut connection) = client::handshake(tcp).await.context("handshake")?;
+    let (_send_request, mut connection) =
+        client::handshake(transport).await.context("handshake")?;
     debug!("handshake complete",);
 
     // set up connection driver
