@@ -89,6 +89,7 @@ impl AsyncWrite for Transport {
 
 pub async fn setup_transport(cfg: TransportCLIConfig) -> Result<Transport> {
     let tcp_stream = TcpStream::connect(&cfg.addr).await.context("TCP connect")?;
+    tcp_stream.set_nodelay(true).context("set TCP_NODELAY")?;
     debug!(addr = cfg.addr.as_str(), "TCP connected");
 
     if cfg.tls {
