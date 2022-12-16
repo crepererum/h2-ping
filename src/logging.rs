@@ -10,8 +10,7 @@ pub struct LoggingCLIConfig {
     /// Log verbosity.
     #[clap(
         short = 'v',
-        long = "--verbose",
-        takes_value = false,
+        long = "verbose",
         action = clap::ArgAction::Count,
     )]
     log_verbose_count: u8,

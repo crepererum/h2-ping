@@ -6,7 +6,7 @@ license = "MIT/Apache-2.0"
 
 [dependencies]
 anyhow = "1.0.64"
-clap = { version = "3.2.11", features = ["derive"] }
+clap = { version = "4.0.29", features = ["derive"] }
 futures = "0.3.24"
 h2 = "0.3.14"
 http = "0.2.8"
@@ -20,3 +20,11 @@ tracing = "0.1"
 tracing-log = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 webpki-roots = "0.22.4"
+
+[profile.mini]
+inherits = "release"
+codegen-units = 1
+lto = true
+opt-level = "z"
+panic = "abort"
+strip = true
